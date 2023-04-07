@@ -26,12 +26,21 @@ export class ParkingSlot {
   @Column()
   type: ParkingSlotType;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    nullable: true,
+    name: 'occupiedAt',
+  })
   occupiedAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    nullable: true,
+    name: 'updatedAt',
+  })
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({
+    nullable: true,
+    name: 'freedAt',
+  })
   freedAt: Date;
 }
