@@ -1,7 +1,15 @@
 import { ParkingSlotsService } from './parking-slots.service';
 import { ParkingSlot } from './entities/parking-slot.entity';
 import { CreateParkingSlotDto } from './dto/create-parking-slot.dto';
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 

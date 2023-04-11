@@ -1,3 +1,4 @@
+import { HasRoles } from 'src/auth/decorators/roles.decorator';
 import { Roles } from './../auth/roles/roles.enum';
 import {
   Body,
@@ -19,11 +20,9 @@ import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { Task } from './task.entity';
 import { TasksService } from './tasks.service';
-import { HasRoles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('tasks')
-@UseGuards(AuthGuard())
-@UseGuards(RolesGuard)
+@UseGuards(AuthGuard(), RolesGuard)
 export class TasksController {
   constructor(private tasksService: TasksService) {}
 
@@ -48,7 +47,7 @@ export class TasksController {
     return this.tasksService.createTask(createTaskDto, user);
   }
 
-  @HasRoles(Roles.ADMIN)
+  @HasRoles('ADMIN')
   @Delete('/:id')
   deleteTask(@Param('id') id: string, @GetUser() user: User): Promise<void> {
     return this.tasksService.deleteTask(id, user);

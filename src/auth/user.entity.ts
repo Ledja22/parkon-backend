@@ -17,5 +17,5 @@ export class User {
   role: Roles;
 
   @OneToMany((_type) => Task, (task) => task.user, { eager: true })
-  tasks: Task[];
+  tasks: Task[]; // kjo duhet ber vehicles
 }

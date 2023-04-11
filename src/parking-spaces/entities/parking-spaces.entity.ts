@@ -8,46 +8,41 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ParkingSpace } from 'src/parking-spaces/entities/parking-spaces.entity';
+import { ParkingSlot } from 'src/parking-slots/entities/parking-slot.entity';
 
 @Entity()
-export class ParkingSlot {
+export class ParkingSpace {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  number: number;
-
-  @Column()
-  status: ParkingSlotStatus;
-
-  @Column()
-  type: ParkingSlotType;
-
-  @CreateDateColumn({
+  @Column({
     nullable: true,
     name: 'occupiedAt',
   })
-  occupiedAt: Date;
+  opensAt: Date;
 
-  @UpdateDateColumn({
+  @Column({
     nullable: true,
     name: 'updatedAt',
   })
-  updatedAt: Date;
+  closesAt: Date;
 
-  @DeleteDateColumn({
-    nullable: true,
-    name: 'freedAt',
+  @Column()
+  name: string;
+
+  @Column()
+  telephone: string;
+
+  @Column()
+  address: string;
+
+  @OneToMany((_type) => ParkingSlot, (parkingSlot) => parkingSlot, {
+    eager: true,
   })
-  freedAt: Date;
-
-  @ManyToOne(
-    () => ParkingSpace,
-    (parkingSpace: ParkingSpace) => parkingSpace.id,
-  )
-  parkingSpace: ParkingSpace;
+  @Exclude({ toPlainOnly: true })
+  parkingSlots: ParkingSlot[];
 }
