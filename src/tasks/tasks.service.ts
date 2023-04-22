@@ -47,6 +47,7 @@ export class TasksService {
 
   async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     const { title, description } = createTaskDto;
+    console.log(user);
 
     const task = this.tasksRepository.create({
       title,

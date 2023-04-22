@@ -6,10 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { User } from './auth/user.entity';
 import { ParkingSlotsModule } from './parking-slots/parking-slots.module';
-import { ParkingSpacesController } from './parking-spaces/parking-spaces.controller';
-import { ParkingSpacesService } from './parking-spaces/parking-spaces.service';
 import { ParkingSpacesModule } from './parking-spaces/parking-spaces.module';
 import { CarModule } from './vehicle/vehicle.module';
+import { ActivityService } from './activity/activity.service';
+import { ActivityController } from './activity/activity.controller';
+import { ActivityModule } from './activity/activity.module';
 @Module({
   imports: [
     TasksModule,
@@ -29,8 +30,9 @@ import { CarModule } from './vehicle/vehicle.module';
     ParkingSlotsModule,
     ParkingSpacesModule,
     CarModule,
+    ActivityModule,
   ],
-  controllers: [ParkingSpacesController],
-  providers: [ParkingSpacesService],
+  controllers: [ActivityController],
+  providers: [ActivityService],
 })
 export class AppModule {}

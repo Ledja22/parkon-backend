@@ -1,18 +1,17 @@
-import { IsEnum, isNotEmpty, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 import { ParkingSlot } from 'src/parking-slots/entities/parking-slot.entity';
 import { CapacityDto } from './capacity.dto';
-
-export class CreateParkingSpaceDto {
-  @IsNotEmpty()
+export class UpdateParkingSpaceDto {
+  @IsOptional()
   name: string;
 
   @IsOptional()
   capacity: CapacityDto;
 
-  @IsNotEmpty()
+  @IsOptional()
   telephone: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   address: string;
 
   @IsOptional()

@@ -1,3 +1,4 @@
+import { ParkingSpace } from 'src/parking-spaces/entities/parking-spaces.entity';
 import { Roles } from './roles/roles.enum';
 import { Task } from 'src/tasks/task.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -18,4 +19,7 @@ export class User {
 
   @OneToMany((_type) => Task, (task) => task.user, { eager: true })
   tasks: Task[]; // kjo duhet ber vehicles
+
+  @OneToMany(() => ParkingSpace, (parkingSpace) => parkingSpace.user)
+  parkingSpaces: ParkingSpace[];
 }

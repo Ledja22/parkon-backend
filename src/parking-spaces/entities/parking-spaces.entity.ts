@@ -1,18 +1,16 @@
-import { ParkingSlotType } from './../enums/parking-slot-types.enum';
-import { ParkingSlotStatus } from './../enums/parking-slot-status.enum';
+import { ParkingSlotType } from 'src/parking-slots/enums/parking-slot-types.enum';
+import { ParkingSlotStatus } from 'src/parking-slots/enums/parking-slot-status.enum';
 import { Exclude } from 'class-transformer';
 import { User } from 'src/auth/user.entity';
 import {
   Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { ParkingSlot } from 'src/parking-slots/entities/parking-slot.entity';
+import { CapacityDto } from '../dto/capacity.dto';
 
 @Entity()
 export class ParkingSpace {
@@ -22,14 +20,16 @@ export class ParkingSpace {
   @Column({
     nullable: true,
     name: 'occupiedAt',
+    type: 'time',
   })
-  opensAt: Date;
+  opensAt: string;
 
   @Column({
     nullable: true,
     name: 'updatedAt',
+    type: 'time',
   })
-  closesAt: Date;
+  closesAt: string;
 
   @Column()
   name: string;
@@ -40,9 +40,18 @@ export class ParkingSpace {
   @Column()
   address: string;
 
-  @OneToMany((_type) => ParkingSlot, (parkingSlot) => parkingSlot, {
-    eager: true,
-  })
-  @Exclude({ toPlainOnly: true })
+  @Column({ type: 'jsonb' })
+  capacity: CapacityDto;
+
+  @OneToMany(
+    (_type) => ParkingSlot,
+    (parkingSlot) => parkingSlot.parkingSpace,
+    {
+      eager: true,
+    },
+  )
   parkingSlots: ParkingSlot[];
+
+  @ManyToOne(() => User, (user) => user.parkingSpaces)
+  user: User;
 }

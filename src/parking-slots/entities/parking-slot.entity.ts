@@ -46,8 +46,10 @@ export class ParkingSlot {
   freedAt: Date;
 
   @ManyToOne(
-    () => ParkingSpace,
-    (parkingSpace: ParkingSpace) => parkingSpace.id,
+    (_type) => ParkingSpace,
+    (parkingSpace) => parkingSpace.parkingSlots,
+    { eager: false },
   )
+  @Exclude({ toPlainOnly: true })
   parkingSpace: ParkingSpace;
 }
