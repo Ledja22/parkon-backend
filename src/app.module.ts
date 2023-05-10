@@ -29,7 +29,7 @@ import { ActivityModule } from './activity/activity.module';
     VehicleModule,
     ActivityModule,
   ],
-  controllers: [ActivityController],
-  providers: [ActivityService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

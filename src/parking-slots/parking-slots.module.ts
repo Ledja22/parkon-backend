@@ -9,5 +9,6 @@ import { AuthModule } from 'src/auth/auth.module';
   imports: [TypeOrmModule.forFeature([ParkingSlot]), AuthModule],
   controllers: [ParkingSlotsController],
   providers: [ParkingSlotsService],
+  exports: [ParkingSlotsService],
 })
 export class ParkingSlotsModule {}

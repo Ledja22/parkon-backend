@@ -5,21 +5,21 @@ import { Activity } from './entity/activity.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/auth/user.entity';
-import { ParkingSpacesService } from 'src/parking-spaces/parking-spaces.service';
 import { VehicleService } from 'src/vehicle/vehicle.service';
 import { ActivityStatus } from './enums/activity-status.enum';
+import { ParkingSpacesService } from 'src/parking-spaces/parking-spaces.service';
 
 @Injectable()
 export class ActivityService {
   constructor(
     @InjectRepository(Activity)
-    private activityRepository: Repository<Activity>,
+    private readonly activityRepository: Repository<Activity>,
     @Inject(ParkingSlotsService)
-    private parkingSlotsService: ParkingSlotsService,
+    private readonly parkingSlotsService: ParkingSlotsService,
     @Inject(ParkingSpacesService)
-    private ParkingSpacesService: ParkingSpacesService,
+    private readonly ParkingSpacesService: ParkingSpacesService,
     @Inject(VehicleService)
-    private vehicleService: VehicleService,
+    private readonly vehicleService: VehicleService,
   ) {}
 
   async getActivity(user: User): Promise<Activity[]> {

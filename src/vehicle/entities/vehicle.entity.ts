@@ -12,9 +12,6 @@ export class Vehicle {
   plate: string;
 
   @Column()
-  ownerId: string;
-
-  @Column()
   type: ParkingSlotType;
 
   @ManyToOne((_type) => User, (user) => user.vehicle, { eager: false })

@@ -36,6 +36,7 @@ export class VehicleService {
     const vehicle = this.vehicleRepository.create({
       plate,
       type,
+      user,
     });
     await this.vehicleRepository.save(vehicle);
     return vehicle;

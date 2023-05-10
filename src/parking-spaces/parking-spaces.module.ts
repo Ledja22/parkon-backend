@@ -10,5 +10,6 @@ import { User } from 'src/auth/user.entity';
   imports: [TypeOrmModule.forFeature([ParkingSpace, User]), AuthModule],
   controllers: [ParkingSpacesController],
   providers: [ParkingSpacesService],
+  exports: [ParkingSpacesService],
 })
 export class ParkingSpacesModule {}
