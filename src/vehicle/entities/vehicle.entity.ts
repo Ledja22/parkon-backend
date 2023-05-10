@@ -1,5 +1,7 @@
+import { Exclude } from 'class-transformer';
+import { User } from 'src/auth/user.entity';
 import { ParkingSlotType } from 'src/parking-slots/enums/parking-slot-types.enum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Vehicle {
@@ -14,4 +16,8 @@ export class Vehicle {
 
   @Column()
   type: ParkingSlotType;
+
+  @ManyToOne((_type) => User, (user) => user.vehicle, { eager: false })
+  @Exclude({ toPlainOnly: true })
+  user: User;
 }

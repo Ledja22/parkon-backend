@@ -5,7 +5,6 @@ import {
   Get,
   Param,
   Post,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -35,7 +34,7 @@ export class ActivityController {
   }
 
   @Post()
-  createTask(
+  createActivity(
     @Body() createActivityDto: CreateActivityDto,
     @GetUser() user: User,
   ): Promise<Activity> {

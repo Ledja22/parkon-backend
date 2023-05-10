@@ -1,15 +1,25 @@
+import { ParkingSlotsService } from './../parking-slots/parking-slots.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Activity } from './entity/activity.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/auth/user.entity';
+import { ParkingSpacesService } from 'src/parking-spaces/parking-spaces.service';
+import { VehicleService } from 'src/vehicle/vehicle.service';
+import { ActivityStatus } from './enums/activity-status.enum';
 
 @Injectable()
 export class ActivityService {
   constructor(
     @InjectRepository(Activity)
     private activityRepository: Repository<Activity>,
+    @Inject(ParkingSlotsService)
+    private parkingSlotsService: ParkingSlotsService,
+    @Inject(ParkingSpacesService)
+    private ParkingSpacesService: ParkingSpacesService,
+    @Inject(VehicleService)
+    private vehicleService: VehicleService,
   ) {}
 
   async getActivity(user: User): Promise<Activity[]> {
@@ -32,19 +42,55 @@ export class ActivityService {
     return found;
   }
 
+  // async createActivity(
+  //   createActivityDto: CreateActivityDto,
+  //   user: User,
+  // ): Promise<Activity> {
+  //   const { vehicleId, parkingSlotId, parkingSpaceId, status } =
+  //     createActivityDto;
+
+  //   const parkingSlot =
+  //     this.parkingSlotsService.getParkingSlotById(parkingSlotId);
+  //   const parkingSpace = this.ParkingSpacesService.getParkingSpaceById(
+  //     parkingSpaceId,
+  //     user,
+  //   );
+  //   const vehicle = this.vehicleService.getVehicleById(vehicleId, user);
+
+  //   const activity = this.activityRepository.create({
+  //     vehicle,
+  //     status,
+  //     parkingSpace,
+  //     parkingSlot,
+  //     user,
+  //   });
+
+  //   await this.activityRepository.save(activity);
+  //   return activity;
+  // }
+
   async createActivity(
     createActivityDto: CreateActivityDto,
     user: User,
   ): Promise<Activity> {
-    const { carId, parkingSlotId, parkingSpaceId } = createActivityDto;
-    console.log(user);
+    const { vehicleId, parkingSlotId, parkingSpaceId, status } =
+      createActivityDto;
 
-    const activity = this.activityRepository.create({
-      carId,
+    const parkingSlot = await this.parkingSlotsService.getParkingSlotById(
       parkingSlotId,
+    );
+    const parkingSpace = await this.ParkingSpacesService.getParkingSpaceById(
       parkingSpaceId,
       user,
-    });
+    );
+    const vehicle = await this.vehicleService.getVehicleById(vehicleId, user);
+
+    const activity = new Activity();
+    activity.status = status;
+    activity.vehicle = vehicle;
+    activity.parkingSpace = parkingSpace;
+    activity.parkingSlot = parkingSlot;
+    activity.user = user;
 
     await this.activityRepository.save(activity);
     return activity;

@@ -1,15 +1,21 @@
 import { IsEnum, isNotEmpty, IsNotEmpty, IsOptional } from 'class-validator';
+import { User } from 'src/auth/user.entity';
+import { ActivityStatus } from '../enums/activity-status.enum';
 
 export class CreateActivityDto {
   @IsNotEmpty()
-  carId: string;
+  vehicleId: string;
 
   @IsNotEmpty()
   parkingSlotId: string;
 
   @IsNotEmpty()
-    parkingSpaceId: string;
-    
-     //ktu duhen ruajtur dhe statusi i ktij aktiviteti
-    
+  parkingSpaceId: string;
+
+  @IsNotEmpty()
+  user: User;
+
+  @IsNotEmpty()
+  @IsEnum(ActivityStatus)
+  status: ActivityStatus;
 }

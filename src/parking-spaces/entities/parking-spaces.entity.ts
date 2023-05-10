@@ -53,5 +53,5 @@ export class ParkingSpace {
   parkingSlots: ParkingSlot[];
 
   @ManyToOne(() => User, (user) => user.parkingSpaces)
-  user: User;
+  user?: User;
 }
