@@ -21,8 +21,8 @@ export class User {
   @OneToMany((_type) => Vehicle, (vehicle) => vehicle.user, { eager: true })
   vehicle: Vehicle; // kjo duhet ber vehicles
 
-  @OneToMany(() => ParkingSpace, (parkingSpace) => parkingSpace.user)
-  parkingSpaces: ParkingSpace[];
+  // @OneToMany(() => ParkingSpace, (parkingSpace) => parkingSpace.user)
+  // parkingSpaces: ParkingSpace[]; doesnt make much sense qe nje user te ket parking spaces se kto do jen te activity i nje user so
 
   @OneToMany(() => Activity, (activity) => activity.user)
   activity: Activity[];

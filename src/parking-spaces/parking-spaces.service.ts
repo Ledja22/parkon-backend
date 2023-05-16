@@ -9,7 +9,6 @@ import { CreateParkingSpaceDto } from './dto/create-parking-space.dto';
 import { Repository } from 'typeorm';
 import { User } from 'src/auth/user.entity';
 import { UpdateParkingSpaceDto } from './dto/update-parking-space.dto';
-import { Roles } from 'src/auth/roles/roles.enum';
 
 @Injectable()
 export class ParkingSpacesService {
@@ -45,7 +44,6 @@ export class ParkingSpacesService {
       opensAt,
       closesAt,
       parkingSlots,
-      user,
     });
     await this.parkingSpaceRepository.save(parkingSpace);
     return parkingSpace;
@@ -60,7 +58,7 @@ export class ParkingSpacesService {
 
   async getParkingSpaceById(id: string, user: User): Promise<ParkingSpace> {
     const found = await this.parkingSpaceRepository.findOne({
-      where: { id, user },
+      where: { id },
     });
 
     if (!found) {
@@ -71,7 +69,7 @@ export class ParkingSpacesService {
   }
 
   async deleteParkingSpace(id: string, user: User): Promise<void> {
-    const result = await this.parkingSpaceRepository.delete({ id, user });
+    const result = await this.parkingSpaceRepository.delete({ id });
 
     if (result.affected === 0) {
       throw new NotFoundException(`Parking space with id "${id}" not found`);
