@@ -15,6 +15,12 @@ export class UpdateParkingSpaceDto {
   address: string;
 
   @IsOptional()
+  lat: string;
+
+  @IsOptional()
+  long: string;
+
+  @IsOptional()
   opensAt: string;
 
   @IsOptional()

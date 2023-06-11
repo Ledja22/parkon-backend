@@ -44,6 +44,7 @@ export class ParkingSpacesService {
       opensAt,
       closesAt,
       parkingSlots,
+      userId: user.id,
     });
     await this.parkingSpaceRepository.save(parkingSpace);
     return parkingSpace;
@@ -63,6 +64,23 @@ export class ParkingSpacesService {
 
     if (!found) {
       throw new NotFoundException(`Parking space with ID "${id}" not found`);
+    }
+
+    return found;
+  }
+
+  async getParkingSpaceByUserId(
+    id: string,
+    user: User,
+  ): Promise<ParkingSpace[]> {
+    const found = await this.parkingSpaceRepository.find({
+      where: { userId: id },
+    });
+
+    if (!found) {
+      throw new NotFoundException(
+        `Parking spaces for user with ID "${id}" not found`,
+      );
     }
 
     return found;

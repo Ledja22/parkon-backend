@@ -46,6 +46,14 @@ export class ParkingSpacesController {
     return this.parkingSpaceService.getParkingSpaceById(id, user);
   }
 
+  @Get('/user/:id')
+  getParkingSpaceByUserId(
+    @Param('id') id: string,
+    @GetUser() user: User,
+  ): Promise<ParkingSpace[]> {
+    return this.parkingSpaceService.getParkingSpaceByUserId(id, user);
+  }
+
   @Delete('/:id')
   deleteParkingSpace(
     @Param('id') id: string,

@@ -51,4 +51,7 @@ export class ParkingSpace {
     },
   )
   parkingSlots: ParkingSlot[];
+
+  @Column({ nullable: true })
+  userId: string;
 }

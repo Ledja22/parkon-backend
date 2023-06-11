@@ -23,4 +23,7 @@ export class CreateParkingSpaceDto {
 
   @IsOptional()
   parkingSlots: ParkingSlot[];
+
+  @IsOptional()
+  userId: string;
 }
