@@ -1,14 +1,6 @@
 import { ParkingSlotType } from 'src/parking-slots/enums/parking-slot-types.enum';
 import { ParkingSlotStatus } from 'src/parking-slots/enums/parking-slot-status.enum';
-import { Exclude } from 'class-transformer';
-import { User } from 'src/auth/user.entity';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ParkingSlot } from 'src/parking-slots/entities/parking-slot.entity';
 import { CapacityDto } from '../dto/capacity.dto';
 
@@ -40,8 +32,20 @@ export class ParkingSpace {
   @Column()
   address: string;
 
-  @Column({ type: 'jsonb' })
-  capacity: CapacityDto;
+  @Column()
+  longitude: string;
+
+  @Column()
+  latitude: string;
+
+  @Column()
+  bikeCapacity: number;
+
+  @Column()
+  vanCapacity: number;
+
+  @Column()
+  carCapacity: number;
 
   @OneToMany(
     (_type) => ParkingSlot,

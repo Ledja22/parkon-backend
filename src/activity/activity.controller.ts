@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { Activity } from './entity/activity.entity';
 import { User } from 'src/auth/user.entity';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { CreateActivityDto } from './dto/create-activity.dto';
+import { UpdateActivityDto } from './dto/update-activity.dto';
 
 @Controller('activity')
 @UseGuards(AuthGuard(), RolesGuard)
@@ -47,5 +49,14 @@ export class ActivityController {
     @GetUser() user: User,
   ): Promise<void> {
     return this.activityService.deleteActivity(id, user);
+  }
+
+  @Patch('/:id/')
+  updateActivity(
+    @Param('id') id: string,
+    @Body() updateActivityDto: UpdateActivityDto,
+    @GetUser() user: User,
+  ): Promise<Activity> {
+    return this.activityService.updateActivity(id, updateActivityDto, user);
   }
 }

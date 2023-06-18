@@ -6,19 +6,25 @@ export class UpdateParkingSpaceDto {
   name: string;
 
   @IsOptional()
-  capacity: CapacityDto;
-
-  @IsOptional()
   telephone: string;
 
   @IsOptional()
   address: string;
 
   @IsOptional()
-  lat: string;
+  latitude: string;
 
   @IsOptional()
-  long: string;
+  longitude: string;
+
+  @IsOptional()
+  carCapacity: number;
+
+  @IsOptional()
+  bikeCapacity: number;
+
+  @IsOptional()
+  vanCapacity: number;
 
   @IsOptional()
   opensAt: string;

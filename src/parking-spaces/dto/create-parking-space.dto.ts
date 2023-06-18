@@ -6,14 +6,26 @@ export class CreateParkingSpaceDto {
   @IsNotEmpty()
   name: string;
 
-  @IsOptional()
-  capacity: CapacityDto;
-
   @IsNotEmpty()
   telephone: string;
 
   @IsNotEmpty()
   address: string;
+
+  @IsNotEmpty()
+  latitude: string;
+
+  @IsNotEmpty()
+  longitude: string;
+
+  @IsNotEmpty()
+  carCapacity: number;
+
+  @IsNotEmpty()
+  bikeCapacity: number;
+
+  @IsNotEmpty()
+  vanCapacity: number;
 
   @IsOptional()
   opensAt: string;

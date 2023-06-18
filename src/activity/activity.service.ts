@@ -1,11 +1,11 @@
+import { UpdateActivityDto } from './dto/update-activity.dto';
+import { Activity } from 'src/activity/entity/activity.entity';
 import { ParkingSlotsService } from './../parking-slots/parking-slots.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { Activity } from './entity/activity.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/auth/user.entity';
-import { VehicleService } from 'src/vehicle/vehicle.service';
 import { ActivityStatus } from './enums/activity-status.enum';
 import { ParkingSpacesService } from 'src/parking-spaces/parking-spaces.service';
 
@@ -14,25 +14,19 @@ export class ActivityService {
   constructor(
     @InjectRepository(Activity)
     private readonly activityRepository: Repository<Activity>,
-    @Inject(ParkingSlotsService)
-    private readonly parkingSlotsService: ParkingSlotsService,
     @Inject(ParkingSpacesService)
-    private readonly ParkingSpacesService: ParkingSpacesService,
-    @Inject(VehicleService)
-    private readonly vehicleService: VehicleService,
+    private readonly parkingSpacesService: ParkingSpacesService,
   ) {}
 
   async getActivity(user: User): Promise<Activity[]> {
-    const query = this.activityRepository
-      .createQueryBuilder('activities')
-      .where('user.id = :userId', { user });
-    const activities = await query.getMany();
-    return activities;
+    const query = this.activityRepository.createQueryBuilder('activity');
+    const activity = await query.getMany();
+    return activity;
   }
 
   async getActivityById(id: string, user: User): Promise<Activity> {
     const found = await this.activityRepository.findOne({
-      where: { id, user },
+      where: { id, userId: user.id },
     });
 
     if (!found) {
@@ -42,65 +36,85 @@ export class ActivityService {
     return found;
   }
 
-  // async createActivity(
-  //   createActivityDto: CreateActivityDto,
-  //   user: User,
-  // ): Promise<Activity> {
-  //   const { vehicleId, parkingSlotId, parkingSpaceId, status } =
-  //     createActivityDto;
-
-  //   const parkingSlot =
-  //     this.parkingSlotsService.getParkingSlotById(parkingSlotId);
-  //   const parkingSpace = this.ParkingSpacesService.getParkingSpaceById(
-  //     parkingSpaceId,
-  //     user,
-  //   );
-  //   const vehicle = this.vehicleService.getVehicleById(vehicleId, user);
-
-  //   const activity = this.activityRepository.create({
-  //     vehicle,
-  //     status,
-  //     parkingSpace,
-  //     parkingSlot,
-  //     user,
-  //   });
-
-  //   await this.activityRepository.save(activity);
-  //   return activity;
-  // }
-
   async createActivity(
     createActivityDto: CreateActivityDto,
     user: User,
   ): Promise<Activity> {
-    const { vehicleId, parkingSlotId, parkingSpaceId, status } =
-      createActivityDto;
+    const {
+      vehiclePlate,
+      parkingSlotType,
+      parkingSpaceId,
+      status,
+      closesAt,
+      opensAt,
+    } = createActivityDto;
 
-    const parkingSlot = await this.parkingSlotsService.getParkingSlotById(
-      parkingSlotId,
-    );
-    const parkingSpace = await this.ParkingSpacesService.getParkingSpaceById(
+    const recentActivity = this.activityRepository.create({
+      vehiclePlate,
+      parkingSlotType,
+      parkingSpaceId,
+      status,
+      closesAt,
+      opensAt,
+      userId: user.id,
+    });
+
+    this.parkingSpacesService.updateParkingSpaceCapacity(
       parkingSpaceId,
       user,
+      parkingSlotType,
+      'decrement',
     );
-    const vehicle = await this.vehicleService.getVehicleById(vehicleId, user);
 
-    const activity = new Activity();
-    activity.status = status;
-    activity.vehicle = vehicle;
-    activity.parkingSpace = parkingSpace;
-    activity.parkingSlot = parkingSlot;
-    activity.user = user;
-
-    await this.activityRepository.save(activity);
-    return activity;
+    await this.activityRepository.save(recentActivity);
+    return recentActivity;
   }
 
   async deleteActivity(id: string, user: User): Promise<void> {
-    const result = await this.activityRepository.delete({ id, user });
+    const activity = await this.getActivityById(id, user);
+    const result = await this.activityRepository.delete({
+      id,
+      userId: user.id,
+    });
+
+    this.parkingSpacesService.updateParkingSpaceCapacity(
+      activity.parkingSpaceId,
+      user,
+      activity.parkingSlotType,
+      'increment',
+    );
 
     if (result.affected === 0) {
       throw new NotFoundException(`Activity with ID "${id}" not found`);
     }
+  }
+
+  async updateActivity(
+    id: string,
+    updateActivityDto: UpdateActivityDto,
+    user: User,
+  ): Promise<Activity> {
+    const { parkingSlotType, opensAt, closesAt, status, vehiclePlate } =
+      updateActivityDto;
+
+    const activity = await this.getActivityById(id, user);
+    activity.parkingSlotType = parkingSlotType;
+    activity.status = status;
+    activity.closesAt = closesAt;
+    activity.opensAt = opensAt;
+    activity.vehiclePlate = vehiclePlate;
+
+    await this.activityRepository.save(activity);
+
+    if (activity.status === ActivityStatus.COMPLETED) {
+      this.parkingSpacesService.updateParkingSpaceCapacity(
+        activity.parkingSpaceId,
+        user,
+        activity.parkingSlotType,
+        'increment',
+      );
+    }
+
+    return activity;
   }
 }

@@ -3,21 +3,18 @@ import { User } from 'src/auth/user.entity';
 import { ActivityStatus } from '../enums/activity-status.enum';
 import { ParkingSlotType } from 'src/parking-slots/enums/parking-slot-types.enum';
 
-export class CreateActivityDto {
-  @IsNotEmpty()
+export class UpdateActivityDto {
+  @IsOptional()
   vehiclePlate: string;
-
-  @IsNotEmpty()
-  parkingSpaceId: string;
 
   @IsOptional()
   userId: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(ActivityStatus)
   status: ActivityStatus;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(ParkingSlotType)
   parkingSlotType: ParkingSlotType;
 

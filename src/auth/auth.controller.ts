@@ -16,14 +16,12 @@ export class AuthController {
   signIn(
     @Body() authCredentialsDto: AuthCredentialsDto,
   ): Promise<{ accessToken: string }> {
-    console.log('====================================');
     return this.authService.signIn(authCredentialsDto);
   }
 
   @Get('user')
   @UseGuards(AuthGuard())
   getUser(@Req() request): any {
-    console.log('user', request.user);
     return request.user;
   }
 }

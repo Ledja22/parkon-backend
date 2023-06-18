@@ -9,6 +9,7 @@ import { CreateParkingSpaceDto } from './dto/create-parking-space.dto';
 import { Repository } from 'typeorm';
 import { User } from 'src/auth/user.entity';
 import { UpdateParkingSpaceDto } from './dto/update-parking-space.dto';
+import { ParkingSlotType } from 'src/parking-slots/enums/parking-slot-types.enum';
 
 @Injectable()
 export class ParkingSpacesService {
@@ -25,20 +26,25 @@ export class ParkingSpacesService {
   ): Promise<ParkingSpace> {
     const {
       name,
-      capacity,
+      carCapacity,
+      vanCapacity,
+      bikeCapacity,
+      latitude,
+      longitude,
       telephone,
       address,
       opensAt,
       closesAt,
       parkingSlots,
     } = createParkingSpaceDto;
-    console.log(user);
-    // if (!user || user.role !== Roles.PARKING_OWNER) {
-    //   throw new BadRequestException('User is not a parking owner');
-    // }
+
     const parkingSpace = this.parkingSpaceRepository.create({
       name,
-      capacity,
+      carCapacity,
+      vanCapacity,
+      bikeCapacity,
+      latitude,
+      longitude,
       telephone,
       address,
       opensAt,
@@ -101,7 +107,11 @@ export class ParkingSpacesService {
   ): Promise<ParkingSpace> {
     const {
       name,
-      capacity,
+      carCapacity,
+      vanCapacity,
+      bikeCapacity,
+      latitude,
+      longitude,
       telephone,
       address,
       opensAt,
@@ -111,7 +121,11 @@ export class ParkingSpacesService {
 
     const parkingSpace = await this.getParkingSpaceById(id, user);
     parkingSpace.name = name;
-    parkingSpace.capacity = capacity;
+    parkingSpace.bikeCapacity = bikeCapacity;
+    parkingSpace.vanCapacity = vanCapacity;
+    parkingSpace.latitude = latitude;
+    parkingSpace.longitude = longitude;
+    parkingSpace.carCapacity = carCapacity;
     parkingSpace.telephone = telephone;
     parkingSpace.address = address;
     parkingSpace.closesAt = closesAt;
@@ -120,6 +134,29 @@ export class ParkingSpacesService {
 
     await this.parkingSpaceRepository.save(parkingSpace);
 
+    return parkingSpace;
+  }
+
+  async updateParkingSpaceCapacity(id, user, parkingSlotType, action) {
+    const parkingSpace = await this.getParkingSpaceById(id, user);
+    if (action === 'decrement') {
+      if (parkingSlotType == ParkingSlotType.BIKE) {
+        parkingSpace.bikeCapacity--;
+      } else if (parkingSlotType == ParkingSlotType.VAN) {
+        parkingSpace.vanCapacity--;
+      } else if (parkingSlotType == ParkingSlotType.CAR) {
+        parkingSpace.carCapacity--;
+      }
+    } else if (action === 'increment') {
+      if (parkingSlotType == ParkingSlotType.BIKE) {
+        parkingSpace.bikeCapacity++;
+      } else if (parkingSlotType == ParkingSlotType.VAN) {
+        parkingSpace.vanCapacity++;
+      } else if (parkingSlotType == ParkingSlotType.CAR) {
+        parkingSpace.carCapacity++;
+      }
+    }
+    await this.parkingSpaceRepository.save(parkingSpace);
     return parkingSpace;
   }
 }
